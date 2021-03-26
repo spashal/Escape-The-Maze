@@ -47,6 +47,10 @@ if (APPLE)
 endif()
 
 # GLEW
-pkg_check_modules(GLEW REQUIRED glew)
-include_directories(${GLEW_INCLUDE_DIRS})
-target_link_libraries (${PROJECT_NAME} ${GLEW_LIBRARIES})
+find_package(GLEW REQUIRED)
+target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
+
+# GLM
+pkg_check_modules(GLM REQUIRED glm)
+include_directories(${GLM_INCLUDE_DIRS})
+target_link_libraries (${PROJECT_NAME} ${GLM_LIBRARIES})
