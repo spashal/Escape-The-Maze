@@ -1,6 +1,6 @@
 #include "main.h"
 #include "timer.h"
-#include "ball.h"
+#include "maze.h"
 
 using namespace std;
 
@@ -12,7 +12,7 @@ GLFWwindow *window;
 * Customizable functions *
 **************************/
 
-Ball ball1;
+Maze maze1;
 
 float screen_zoom = 1, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 0;
@@ -51,7 +51,7 @@ void draw() {
     glm::mat4 MVP;  // MVP = Projection * View * Model
 
     // Scene render
-    ball1.draw(VP);
+    maze1.draw(VP);
 }
 
 void tick_input(GLFWwindow *window) {
@@ -63,8 +63,8 @@ void tick_input(GLFWwindow *window) {
 }
 
 void tick_elements() {
-    ball1.tick();
-    camera_rotation_angle += 1;
+    maze1.tick();
+    // camera_rotation_angle += 1;
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -73,7 +73,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    ball1       = Ball(0, 0, COLOR_RED);
+    maze1 = Maze(0, 0, COLOR_BLACK);
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("../source/shaders/shader.vert", "../source/shaders/shader.frag");
@@ -99,8 +99,8 @@ void initGL(GLFWwindow *window, int width, int height) {
 
 int main(int argc, char **argv) {
     srand(time(0));
-    int width  = 600;
-    int height = 600;
+    int width  = 1000;
+    int height = 800;
 
     window = initGLFW(width, height);
 
