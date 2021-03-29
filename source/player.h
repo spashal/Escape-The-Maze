@@ -20,7 +20,6 @@ public:
     float prevX;
     float prevY;
     float prevZ;
-    GLfloat maze[18 * 3];
     void checkCollision();
 
 private:

@@ -15,6 +15,10 @@ float max(float a, float b){
     return b;
 }
 
+float dist(float a, float b, float x, float y){
+    return ((a - x) * (a - x) + (b - y) * (b - y));
+}
+
 Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(0, y, x);
     this->rotation = 0;
@@ -38,9 +42,6 @@ Player::Player(float x, float y, color_t color) {
         -1.0f, 0.3f, 0.3f,
     };
 
-    
-    for(int i = 0 ; i < 54 ; i++)
-        cout << maze[i] << endl;
     this->object = create3DObject(GL_TRIANGLES, 3 * 2, vertex_buffer_data, color, GL_FILL);
 }
 
@@ -131,5 +132,15 @@ void Player::checkCollision() {
             if((maze[i + 1] - this->y) * (maze[i + 1] - this->y) < (0.4f) * (0.4f))
                 this->y = this->prevY;
         }
+
+        if(dist(maze[i + 1], maze[i + 2], this->y, this->z) < (0.4f) * (0.4f)){
+            this->y = this->prevY;
+            this->z = this->prevZ;
+        }
+
+        if(dist(maze[i + 1 + 3], maze[i + 2 + 3], this->y, this->z) < (0.4f) * (0.4f)){
+            this->y = this->prevY;
+            this->z = this->prevZ;
+        }        
     }
 }
