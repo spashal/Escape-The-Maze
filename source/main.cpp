@@ -78,7 +78,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     // Create the models
 
     maze1 = Maze(0, 0, COLOR_BLACK);
-    player = Player(0, 0, COLOR_RED);
+    player = Player(1.2f, 0.5f, COLOR_RED);
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("../source/shaders/shader.vert", "../source/shaders/shader.frag");
