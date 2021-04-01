@@ -21,6 +21,7 @@ public:
     float prevX;
     float prevY;
     float prevZ;
+    bool vanish;
     void checkCollision();
     void setDirection();
 

@@ -25,5 +25,4 @@ public:
 private:
     VAO *object;
 };
-
 #endif // Player_H

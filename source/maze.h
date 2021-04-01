@@ -14,6 +14,10 @@ public:
     void set_position(float x, float y);
     void tick();
     double speed;
+    float vanishX;
+    float vanishY;
+    float vanishZ;
+    static const GLfloat vanishVert[12];
 private:
     VAO *object;
 };

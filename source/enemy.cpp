@@ -25,8 +25,11 @@ float adist(float a, float b, float x, float y){
 Enemy::Enemy(float x, float y, color_t color) {
     this->position = glm::vec3(0, y, x);
     this->rotation = 0;
+    srand(time(0));
+
     speed = 0.02;
     dir = 1;
+    this->vanish = true;
     this->x = 1;
     this->y = y;
     this->z = x;
@@ -51,26 +54,6 @@ Enemy::Enemy(float x, float y, color_t color) {
 
 void Enemy::draw(glm::mat4 VP) {
 
-    // if(giveKeyVar() == 1){
-    //     this->prevZ = this->z;
-    //     this->z += 0.1;
-    //     changeKeyVar(0);
-    // }
-    // if(giveKeyVar() == 2){
-    //     this->prevZ = this->z;
-    //     this->z -= 0.1;
-    //     changeKeyVar(0);
-    // }
-    // if(giveKeyVar() == 3){
-    //     this->prevY = this->y;
-    //     this->y += 0.1;
-    //     changeKeyVar(0);
-    // }
-    // if(giveKeyVar() == 4){
-    //     this->prevY = this->y;
-    //     this->y -= 0.1;
-    //     changeKeyVar(0);
-    // }
     checkCollision();
     set_position(this->y, this->z);
     Matrices.model = glm::mat4(1.0f);
@@ -79,9 +62,11 @@ void Enemy::draw(glm::mat4 VP) {
     // No need as coords centered at 0, 0, 0 of cube arouund which we waant to rotate
     // rotate          = rotate * glm::translate(glm::vec3(0, -0.6, 0));
     Matrices.model *= (translate * rotate);
-    glm::mat4 MVP = VP * Matrices.model;
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(this->object);
+    if(this->vanish){
+        glm::mat4 MVP = VP * Matrices.model;
+        glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+        draw3DObject(this->object);
+    }
 }
 
 void Enemy::set_position(float y, float z) {
@@ -89,12 +74,10 @@ void Enemy::set_position(float y, float z) {
 }
 
 void Enemy::setDirection(){
-    srand(time(0));
-    this->dir = 1 + rand() % 4;
+    this->dir = 1 + (rand()) % 4;
 }
 
 void Enemy::tick() {
-    // this->rotation += speed;
     if(dir == 1){
         this->prevY = this->y;
         this->y -= speed;

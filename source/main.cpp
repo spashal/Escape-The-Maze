@@ -4,6 +4,8 @@ int KEY_VAR = 0;
 #include "maze.h"
 #include "player.h"
 #include "enemy.h"
+#include <iostream>
+using namespace std;
 
 using namespace std;
 
@@ -72,6 +74,14 @@ void tick_input(GLFWwindow *window) {
 void tick_elements() {
     maze1.tick();
     enemy.tick();
+
+    if((enemy.y - player.y) * (enemy.y - player.y) + (enemy.z - player.z) * (enemy.z - player.z) < (0.3f) * (0.3f)){
+        //pass
+    }
+    // cout << player.y << " " << maze1.vanishY << " " << player.z << " " << maze1.vanishZ << endl;
+    if((player.y - maze1.vanishY) * (player.y - maze1.vanishY) + (player.z - maze1.vanishZ) * (player.z - maze1.vanishZ) < (0.5f) * (0.5f)){
+        enemy.vanish = false;
+    }
     // camera_rotation_angle += 1;
 }
 
