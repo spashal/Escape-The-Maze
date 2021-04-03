@@ -4,6 +4,7 @@ int KEY_VAR = 0;
 #include "maze.h"
 #include "player.h"
 #include "enemy.h"
+#include "coin.h"
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -25,6 +26,7 @@ GLFWwindow *window;
 Maze maze1;
 Player player;
 Enemy enemy;
+Coin coin;
 
 float screen_zoom = 1, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 0;
@@ -66,6 +68,7 @@ void draw() {
     maze1.draw(VP);
     player.draw(VP);
     enemy.draw(VP);
+    coin.draw(VP);
 }
 
 void tick_input(GLFWwindow *window) {
@@ -99,6 +102,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     maze1 = Maze(0, 0, COLOR_BLACK);
     player = Player(-2.5f, 2.5f, COLOR_GREEN);
     enemy = Enemy(2.5f, 0.5f, COLOR_RED);
+    coin = Coin(2.5f, 2.5f, 1.0f, COLOR_RED);
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("../source/shaders/shader.vert", "../source/shaders/shader.frag");
@@ -158,7 +162,7 @@ int main(int argc, char **argv) {
             GLTtext *timetext = gltCreateText();
             char timet[50], healtht[50];
             snprintf(timet, 50, "Time remaining: %d\n", 20 - (int)(time(0) - timex));
-            if((200 == (int)(time(0) - timex) or player.health <= 0)){
+            if((20 == (int)(time(0) - timex) or player.health <= 0)){
                 gameOver = true;
                 // break;
             }
