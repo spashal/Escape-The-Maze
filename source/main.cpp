@@ -5,6 +5,11 @@ int KEY_VAR = 0;
 #include "player.h"
 #include "enemy.h"
 #include <iostream>
+#include <stdio.h>
+#include <string>
+#define GLT_IMPLEMENTATION
+#include "gltext.h"
+
 using namespace std;
 
 using namespace std;
@@ -75,8 +80,8 @@ void tick_elements() {
     maze1.tick();
     enemy.tick();
 
-    if((enemy.y - player.y) * (enemy.y - player.y) + (enemy.z - player.z) * (enemy.z - player.z) < (0.3f) * (0.3f)){
-        //pass
+    if((enemy.y - player.y) * (enemy.y - player.y) + (enemy.z - player.z) * (enemy.z - player.z) < (0.3f) * (0.3f) and enemy.vanish){
+        player.health -= 0.1;
     }
     // cout << player.y << " " << maze1.vanishY << " " << player.z << " " << maze1.vanishZ << endl;
     if((player.y - maze1.vanishY) * (player.y - maze1.vanishY) + (player.z - maze1.vanishZ) * (player.z - maze1.vanishZ) < (0.5f) * (0.5f)){
@@ -92,7 +97,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     // Create the models
 
     maze1 = Maze(0, 0, COLOR_BLACK);
-    player = Player(1.2f, 0.5f, COLOR_GREEN);
+    player = Player(-2.5f, 2.5f, COLOR_GREEN);
     enemy = Enemy(2.5f, 0.5f, COLOR_RED);
 
     // Create and compile our GLSL program from the shaders
@@ -119,28 +124,81 @@ void initGL(GLFWwindow *window, int width, int height) {
 
 int main(int argc, char **argv) {
     srand(time(0));
+    long double timex = time(0);
     int width  = 1000;
+    bool gameOver = false;
     int height = 800;
 
     window = initGLFW(width, height);
 
     initGL (window, width, height);
 
+    gltInit();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    GLTtext *text1 = gltCreateText();
+    gltSetText(text1, "Hello World");
+
     /* Draw in loop */
     while (!glfwWindowShouldClose(window)) {
         // Process timers
 
-        if (t60.processTick()) {
+        if (t60.processTick() and !gameOver) {
             // 60 fps
             // OpenGL Draw commands
             draw();
             // Swap Frame Buffer in double buffering
+ 
+            tick_elements();
+            tick_input(window);           
+            // text rendering
+            gltBeginDraw();
+
+            gltColor(1.0f, 1.0f, 1.0f, 3.0f);
+
+            GLTtext *timetext = gltCreateText();
+            char timet[50], healtht[50];
+            snprintf(timet, 50, "Time remaining: %d\n", 20 - (int)(time(0) - timex));
+            if((200 == (int)(time(0) - timex) or player.health <= 0)){
+                gameOver = true;
+                // break;
+            }
+            gltSetText(timetext, timet);
+            gltDrawText2DAligned(timetext,
+                (GLfloat)(2.0f),
+                (GLfloat)(2.0f),
+                2.0f,
+                -1, -1);
+
+            snprintf(healtht, 50, "\nYour health: %d", player.health);
+            GLTtext *health = gltCreateText();
+            gltSetText(health, healtht);
+            gltDrawText2DAligned(health,
+                (GLfloat)(0.0f),
+                (GLfloat)(0.0f),
+                2.0f,
+                +3, -3);
+
+            gltEndDraw();
             glfwSwapBuffers(window);
 
-            tick_elements();
-            tick_input(window);
         }
 
+        // last thing to be seen before you leave the game
+        if(gameOver){
+            glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            gltBeginDraw();
+            gltColor(1.0f, 0.0f, 1.0f, 1.0f);
+            GLTtext *gameover = gltCreateText();
+            gltSetText(gameover, "\n\n   Game Over !!!");
+            gltDrawText2DAligned(gameover,
+                (GLfloat)(2.0f),
+                (GLfloat)(2.0f),
+                8.0f,
+                -1, -3);
+            gltEndDraw();
+            glfwSwapBuffers(window);
+
+        }
         // Poll for Keyboard and mouse events
         glfwPollEvents();
     }

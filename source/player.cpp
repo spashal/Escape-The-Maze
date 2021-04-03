@@ -26,6 +26,7 @@ Player::Player(float x, float y, color_t color) {
     this->x = 0;
     this->y = y;
     this->z = x;
+    this->health = 100;
     this->prevZ = this->z;
     this->prevY = this->y;
     this->prevX = this->x;

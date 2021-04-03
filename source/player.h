@@ -18,6 +18,7 @@ public:
     float y;
     float z;
     float prevX;
+    int health;
     float prevY;
     float prevZ;
     void checkCollision();
