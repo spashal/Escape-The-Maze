@@ -7,7 +7,7 @@
 class Coin {
 public:
     Coin() {}
-    Coin(float x, float y, float radius, color_t color);
+    Coin(float x, float y, float radius, float angle, color_t color);
     glm::vec3 position;
     float rotation;
     float radius;

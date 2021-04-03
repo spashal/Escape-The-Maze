@@ -5,9 +5,11 @@ int KEY_VAR = 0;
 #include "player.h"
 #include "enemy.h"
 #include "coin.h"
+#include "obstacle.h"
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <iomanip>
 #define GLT_IMPLEMENTATION
 #include "gltext.h"
 
@@ -26,7 +28,51 @@ GLFWwindow *window;
 Maze maze1;
 Player player;
 Enemy enemy;
-Coin coin;
+Coin coins[10];
+Obstacle obstacles[22];
+
+const GLfloat coinVerts[] = {
+    -2.4f, -2.4f,
+    0.0f, 2.4f,
+    0.0f, -1.5f,
+    2.4f, 2.4f,
+    2.4, 0.5f,
+    -2.4f, 0.0f,
+    2.4f, -2.4f,
+    0.0f, -2.4f,
+    -1.0f, -0.6f,
+    0.0f, 1.0f
+};
+
+const GLfloat obstacleVerts[] = {
+    // spike strip on the left
+    2.55f, -2.83f,
+    2.85f, -2.83f,
+    2.25f, -2.83f,
+    1.95f, -2.83f,
+    1.65f, -2.83f,
+    1.35f, -2.83f,
+    1.05f, -2.83f,
+
+    // spike strip on the right
+    -2.85f, -2.83f,
+    -2.55f, -2.83f,
+    -2.25f, -2.83f,
+    -1.95f, -2.83f,
+    -1.65f, -2.83f,
+    -1.35f, -2.83f,
+    -1.05f, -2.83f,
+
+    1.6f, -1.5f,
+    1.6,  0.0f,
+    1.2, 1.0f,
+    2.0f, 2.4f,  
+    -1.0f, 2.4f,  
+    2.4f, 1.0f,  
+    -0.2f, 1.0f,  
+    0.2f, -1.0f,  
+    
+};
 
 float screen_zoom = 1, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 0;
@@ -68,7 +114,10 @@ void draw() {
     maze1.draw(VP);
     player.draw(VP);
     enemy.draw(VP);
-    coin.draw(VP);
+    for(int i = 0 ; i < 22 ; i++)
+        obstacles[i].draw(VP);
+    for(int i = 0 ; i < 10 ; i++)
+        coins[i].draw(VP);
 }
 
 void tick_input(GLFWwindow *window) {
@@ -82,13 +131,26 @@ void tick_input(GLFWwindow *window) {
 void tick_elements() {
     maze1.tick();
     enemy.tick();
+    for(int i = 0 ; i < 10 ; i++)
+        coins[i].tick();
 
+    // collision handling
     if((enemy.y - player.y) * (enemy.y - player.y) + (enemy.z - player.z) * (enemy.z - player.z) < (0.3f) * (0.3f) and enemy.vanish){
         player.health -= 0.1;
     }
-    // cout << player.y << " " << maze1.vanishY << " " << player.z << " " << maze1.vanishZ << endl;
     if((player.y - maze1.vanishY) * (player.y - maze1.vanishY) + (player.z - maze1.vanishZ) * (player.z - maze1.vanishZ) < (0.5f) * (0.5f)){
         enemy.vanish = false;
+    }
+    for(int i = 0 ; i < 10 ; i++){
+        if((player.y - coins[i].y) * (player.y - coins[i].y) + (player.z - coins[i].z) * (player.z - coins[i].z) < (0.3f) * (0.3f) and coins[i].vanish){
+            player.score += 5;
+            coins[i].vanish = false;
+        }
+    }
+    for(int i = 0 ; i < 22 ; i++){
+        if((player.y - obstacles[i].y) * (player.y - obstacles[i].y) + (player.z - obstacles[i].z) * (player.z - obstacles[i].z) < (0.3f) * (0.3f) and coins[i].vanish){
+            player.health -= 0.5;
+        }
     }
     // camera_rotation_angle += 1;
 }
@@ -102,7 +164,11 @@ void initGL(GLFWwindow *window, int width, int height) {
     maze1 = Maze(0, 0, COLOR_BLACK);
     player = Player(-2.5f, 2.5f, COLOR_GREEN);
     enemy = Enemy(2.5f, 0.5f, COLOR_RED);
-    coin = Coin(2.5f, 2.5f, 1.0f, COLOR_RED);
+    for(int i = 0 ; i < 22 ; i++)
+        obstacles[i] = Obstacle(obstacleVerts[i*2], obstacleVerts[i*2 + 1], COLOR_GREEN);
+    for(int i = 0 ; i < 10 ; i++){
+        coins[i] = Coin(coinVerts[i*2], coinVerts[i*2 + 1], 1.0f, i * 10, COLOR_RED);
+    }
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("../source/shaders/shader.vert", "../source/shaders/shader.frag");
@@ -162,7 +228,7 @@ int main(int argc, char **argv) {
             GLTtext *timetext = gltCreateText();
             char timet[50], healtht[50];
             snprintf(timet, 50, "Time remaining: %d\n", 20 - (int)(time(0) - timex));
-            if((20 == (int)(time(0) - timex) or player.health <= 0)){
+            if((2000 == (int)(time(0) - timex) or player.health <= 0)){
                 gameOver = true;
                 // break;
             }
@@ -177,6 +243,16 @@ int main(int argc, char **argv) {
             GLTtext *health = gltCreateText();
             gltSetText(health, healtht);
             gltDrawText2DAligned(health,
+                (GLfloat)(0.0f),
+                (GLfloat)(0.0f),
+                2.0f,
+                +3, -3);
+
+            GLTtext *scoret = gltCreateText();
+            char scoreText[50];
+            snprintf(scoreText, 50, "\n\nScore: %d pts", player.score);
+            gltSetText(scoret, scoreText);
+            gltDrawText2DAligned(scoret,
                 (GLfloat)(0.0f),
                 (GLfloat)(0.0f),
                 2.0f,

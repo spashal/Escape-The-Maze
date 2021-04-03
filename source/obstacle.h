@@ -1,30 +1,32 @@
 #include "main.h"
 
-#ifndef Player_H
-#define Player_H
+#ifndef Obstacle_H
+#define Obstacle_H
 
 
-class Player {
+class Obstacle {
 public:
-    Player() {}
-    Player(float x, float y, color_t color);
+    Obstacle() {}
+    Obstacle(float x, float y, color_t color);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
     void set_position(float x, float y);
     void tick();
     double speed;
+    double dir;
     float x;
     float y;
     float z;
     float prevX;
-    int health;
-    int score;
     float prevY;
     float prevZ;
+    bool vanish;
     void checkCollision();
+    void setDirection();
 
 private:
     VAO *object;
 };
-#endif // Player_H
+
+#endif // Obstacle_H

@@ -9,7 +9,7 @@ float min(float a, float b){
     return a;
 }
 
-float max(float a, float b){
+float max(float a, float b){    
     if(a > b)
         return a;
     return b;
@@ -22,7 +22,8 @@ float dist(float a, float b, float x, float y){
 Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(0, y, x);
     this->rotation = 0;
-    speed = 1;
+    speed = 0.02;
+    this->score = 0;
     this->x = 0;
     this->y = y;
     this->z = x;
@@ -50,23 +51,23 @@ void Player::draw(glm::mat4 VP) {
 
     if(giveKeyVar() == 1){
         this->prevZ = this->z;
-        this->z += 0.1;
-        changeKeyVar(0);
+        this->z += speed;
+        // changeKeyVar(0);
     }
     if(giveKeyVar() == 2){
         this->prevZ = this->z;
-        this->z -= 0.1;
-        changeKeyVar(0);
+        this->z -= speed;
+        // changeKeyVar(0);
     }
     if(giveKeyVar() == 3){
         this->prevY = this->y;
-        this->y += 0.1;
-        changeKeyVar(0);
+        this->y += speed;
+        // changeKeyVar(0);
     }
     if(giveKeyVar() == 4){
         this->prevY = this->y;
-        this->y -= 0.1;
-        changeKeyVar(0);
+        this->y -= speed;
+        // changeKeyVar(0);
     }
     checkCollision();
     set_position(this->y, this->z);
