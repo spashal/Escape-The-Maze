@@ -15,7 +15,7 @@ Coin::Coin(float x, float y, float radius, float angle, color_t color) {
 
     speed = 5;
     dir = 1;
-    this->vanish = true;
+    this->vanish = false;
     this->x = 1;
     this->y = y;
     this->z = x;

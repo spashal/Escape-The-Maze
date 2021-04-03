@@ -37,8 +37,49 @@ Maze::Maze(float x, float y, color_t color) {
 
     };
 
+
+    static const GLfloat hashVerts[] = {
+        -1.0f, 2.7f, -1.2f, 
+        -1.0f, 2.1f, -1.2f,
+        -1.0f, 2.7f, -1.4f,
+        -1.0f, 2.1f, -1.4f,
+        -1.0f, 2.5f, -1.0f,
+        -1.0f, 2.5f, -1.6f,
+        -1.0f, 2.3f, -1.0f,
+        -1.0f, 2.3f, -1.6f,
+
+        -1.0f, 1.5f, -0.0f, 
+        -1.0f, 0.9f, -0.0f,
+        -1.0f, 1.5f, -0.2f,
+        -1.0f, 0.9f, -0.2f,
+        -1.0f, 1.3f, +0.2f,
+        -1.0f, 1.3f, -0.4f,
+        -1.0f, 1.1f, 0.2f,
+        -1.0f, 1.1f, -0.4f,
+
+        -1.0f, 1.5f, 1.2f, 
+        -1.0f, 0.9f, 1.2f,
+        -1.0f, 1.5f, 1.0f,
+        -1.0f, 0.9f, 1.0f,
+        -1.0f, 1.3f, 1.4f,
+        -1.0f, 1.3f, 0.8f,
+        -1.0f, 1.1f, 1.4f,
+        -1.0f, 1.1f, 0.8f,
+
+        -1.0f, -0.3f, 2.4f, 
+        -1.0f, -0.9f, 2.4f,
+        -1.0f, -0.3f, 2.2f,
+        -1.0f, -0.9f, 2.2f,
+        -1.0f, -0.5f, 2.6f,
+        -1.0f, -0.5f, 2.0f,
+        -1.0f, -0.7f, 2.6f,
+        -1.0f, -0.7f, 2.0f,
+
+    };
+
     srand(time(0));
     int temp = rand() % 4;
+    int temp2 = rand() % 4;
 
     static const GLfloat vanishVert[] = {
         randomVerts[temp*12 + 0], randomVerts[temp*12 + 1], randomVerts[temp*12 + 2],        
@@ -51,6 +92,13 @@ Maze::Maze(float x, float y, color_t color) {
     this -> vanishX = (vanishVert[0] + vanishVert[3] + vanishVert[6] + vanishVert[9]) / 4;
     this -> vanishY = (vanishVert[1] + vanishVert[4] + vanishVert[7] + vanishVert[10]) / 4;
     this -> vanishZ = (vanishVert[2] + vanishVert[5] + vanishVert[8] + vanishVert[11]) / 4;
+
+    this -> powerUpX = (hashVerts[temp2 * 24 + 0] + hashVerts[temp2 * 24 + 3] + hashVerts[temp2 * 24 + 6] + hashVerts[temp2 * 24 + 9] + 
+                        hashVerts[temp2 * 24 + 12] + hashVerts[temp2 * 24 + 15] + hashVerts[temp2 * 24 + 18] + hashVerts[temp2 * 24 + 21]) / 8;
+    this -> powerUpY = (hashVerts[temp2 * 24 + 0 + 1] + hashVerts[temp2 * 24 + 3 + 1] + hashVerts[temp2 * 24 + 6 + 1] + hashVerts[temp2 * 24 + 9 + 1] + 
+                        hashVerts[temp2 * 24 + 12 + 1] + hashVerts[temp2 * 24 + 15 + 1] + hashVerts[temp2 * 24 + 18 + 1] + hashVerts[temp2 * 24 + 21 + 1]) / 8;
+    this -> powerUpZ = (hashVerts[temp2 * 24 + 0 + 2] + hashVerts[temp2 * 24 + 3 + 2] + hashVerts[temp2 * 24 + 6 + 2] + hashVerts[temp2 * 24 + 9 + 2] + 
+                        hashVerts[temp2 * 24 + 12 + 2] + hashVerts[temp2 * 24 + 15 + 2] + hashVerts[temp2 * 24 + 18 + 2] + hashVerts[temp2 * 24 + 21 + 2]) / 8;
 
     static const GLfloat vertex_buffer_data[] = {
         -1.0f,-3.0f,-3.0f, // triangle 1 : begin
@@ -85,12 +133,21 @@ Maze::Maze(float x, float y, color_t color) {
 
         vanishVert[6], vanishVert[7], vanishVert[8],        
         vanishVert[9], vanishVert[10], vanishVert[11],  
+
+        hashVerts[0 + temp2 * 24], hashVerts[1 + temp2 * 24], hashVerts[2 + temp2 * 24],
+        hashVerts[3 + temp2 * 24], hashVerts[4 + temp2 * 24], hashVerts[5 + temp2 * 24],
+        hashVerts[6 + temp2 * 24], hashVerts[7 + temp2 * 24], hashVerts[8 + temp2 * 24],
+        hashVerts[9 + temp2 * 24], hashVerts[10 + temp2 * 24], hashVerts[11 + temp2 * 24],
+        hashVerts[12 + temp2 * 24], hashVerts[13 + temp2 * 24], hashVerts[14 + temp2 * 24],
+        hashVerts[15 + temp2 * 24], hashVerts[16 + temp2 * 24], hashVerts[17 + temp2 * 24],
+        hashVerts[18 + temp2 * 24], hashVerts[19 + temp2 * 24], hashVerts[20 + temp2 * 24],
+        hashVerts[21 + temp2 * 24], hashVerts[22 + temp2 * 24], hashVerts[23 + temp2 * 24],
               
     };    
     cout << vanishVert[2] << " " << vanishVert[5] << " " << vanishVert[8] << " " << vanishVert[11] << endl;
     cout << this->vanishX << " " << this->vanishY << " " << this->vanishZ << endl;
 // 
-    this->object = create3DObject(GL_LINES, 11 * 2, vertex_buffer_data, color, GL_FILL);
+    this->object = create3DObject(GL_LINES, 15 * 2, vertex_buffer_data, color, GL_FILL);
 }
 
 void Maze::draw(glm::mat4 VP) {

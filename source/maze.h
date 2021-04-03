@@ -17,6 +17,9 @@ public:
     float vanishX;
     float vanishY;
     float vanishZ;
+    float powerUpX;
+    float powerUpY;
+    float powerUpZ;
     static const GLfloat vanishVert[12];
 private:
     VAO *object;

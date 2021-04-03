@@ -141,6 +141,14 @@ void tick_elements() {
     if((player.y - maze1.vanishY) * (player.y - maze1.vanishY) + (player.z - maze1.vanishZ) * (player.z - maze1.vanishZ) < (0.5f) * (0.5f)){
         enemy.vanish = false;
     }
+
+    if((player.y - maze1.powerUpY) * (player.y - maze1.powerUpY) + (player.z - maze1.powerUpZ) * (player.z - maze1.powerUpZ) < (0.5f) * (0.5f)){
+        for(int i = 0 ; i < 10 ; i++)
+            coins[i].vanish = true;
+        for(int i = 0 ; i < 22 ; i++)
+            obstacles[i].vanish = true;
+    }
+
     for(int i = 0 ; i < 10 ; i++){
         if((player.y - coins[i].y) * (player.y - coins[i].y) + (player.z - coins[i].z) * (player.z - coins[i].z) < (0.3f) * (0.3f) and coins[i].vanish){
             player.score += 5;
@@ -148,7 +156,7 @@ void tick_elements() {
         }
     }
     for(int i = 0 ; i < 22 ; i++){
-        if((player.y - obstacles[i].y) * (player.y - obstacles[i].y) + (player.z - obstacles[i].z) * (player.z - obstacles[i].z) < (0.3f) * (0.3f) and coins[i].vanish){
+        if((player.y - obstacles[i].y) * (player.y - obstacles[i].y) + (player.z - obstacles[i].z) * (player.z - obstacles[i].z) < (0.3f) * (0.3f) and obstacles[i].vanish){
             player.health -= 0.5;
         }
     }

@@ -14,7 +14,7 @@ Obstacle::Obstacle(float x, float y, color_t color) {
 
     speed = 0.02;
     dir = 1;
-    this->vanish = true;
+    this->vanish = false;
     this->x = 1;
     this->y = y;
     this->z = x;
