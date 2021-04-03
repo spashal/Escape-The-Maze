@@ -6,6 +6,7 @@ int KEY_VAR = 0;
 #include "enemy.h"
 #include "coin.h"
 #include "obstacle.h"
+#include "ending.h"
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -30,6 +31,8 @@ Player player;
 Enemy enemy;
 Coin coins[10];
 Obstacle obstacles[22];
+Ending endra;
+bool gameWon = false;
 
 const GLfloat coinVerts[] = {
     -2.4f, -2.4f,
@@ -114,6 +117,7 @@ void draw() {
     maze1.draw(VP);
     player.draw(VP);
     enemy.draw(VP);
+    endra.draw(VP);
     for(int i = 0 ; i < 22 ; i++)
         obstacles[i].draw(VP);
     for(int i = 0 ; i < 10 ; i++)
@@ -160,6 +164,10 @@ void tick_elements() {
             player.health -= 0.5;
         }
     }
+
+    if((player.y - (-3.0f)) * (player.y - (-3.0f)) + (player.z - (-0.0f)) * (player.z - (-0.0f)) < 0.5f){
+        gameWon = true;
+    }
     // camera_rotation_angle += 1;
 }
 
@@ -172,6 +180,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     maze1 = Maze(0, 0, COLOR_BLACK);
     player = Player(-2.5f, 2.5f, COLOR_GREEN);
     enemy = Enemy(2.5f, 0.5f, COLOR_RED);
+    endra = Ending(0.0f, 0.0f, COLOR_GREEN);
     for(int i = 0 ; i < 22 ; i++)
         obstacles[i] = Obstacle(obstacleVerts[i*2], obstacleVerts[i*2 + 1], COLOR_GREEN);
     for(int i = 0 ; i < 10 ; i++){
@@ -205,7 +214,7 @@ int main(int argc, char **argv) {
     long double timex = time(0);
     int width  = 1000;
     bool gameOver = false;
-    int height = 800;
+    int height = 1000;
 
     window = initGLFW(width, height);
 
@@ -220,7 +229,7 @@ int main(int argc, char **argv) {
     while (!glfwWindowShouldClose(window)) {
         // Process timers
 
-        if (t60.processTick() and !gameOver) {
+        if (t60.processTick() and !gameOver and !gameWon) {
             // 60 fps
             // OpenGL Draw commands
             draw();
@@ -256,9 +265,24 @@ int main(int argc, char **argv) {
                 2.0f,
                 +3, -3);
 
+            GLTtext *taskt = gltCreateText();
+            char taskText[50];
+            int tasks = 0;
+            if(!enemy.vanish)
+                tasks++;
+            if(obstacles[0].vanish)
+                tasks++;
+            snprintf(taskText, 50, "\n\nTasks Completed: %d/2", tasks);
+            gltSetText(taskt, taskText);
+            gltDrawText2DAligned(taskt,
+                (GLfloat)(0.0f),
+                (GLfloat)(0.0f),
+                2.0f,
+                +3, -3);
+
             GLTtext *scoret = gltCreateText();
             char scoreText[50];
-            snprintf(scoreText, 50, "\n\nScore: %d pts", player.score);
+            snprintf(scoreText, 50, "\n\n\nScore: %d pts", player.score);
             gltSetText(scoret, scoreText);
             gltDrawText2DAligned(scoret,
                 (GLfloat)(0.0f),
@@ -270,7 +294,6 @@ int main(int argc, char **argv) {
             glfwSwapBuffers(window);
 
         }
-
         // last thing to be seen before you leave the game
         if(gameOver){
             glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -286,6 +309,21 @@ int main(int argc, char **argv) {
             gltEndDraw();
             glfwSwapBuffers(window);
 
+        }
+
+        if(gameWon){
+            glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            gltBeginDraw();
+            gltColor(1.0f, 0.0f, 1.0f, 1.0f);
+            GLTtext *gameover = gltCreateText();
+            gltSetText(gameover, "\n\n    You Won !!!");
+            gltDrawText2DAligned(gameover,
+                (GLfloat)(2.0f),
+                (GLfloat)(2.0f),
+                8.0f,
+                -1, -3);
+            gltEndDraw();
+            glfwSwapBuffers(window);
         }
         // Poll for Keyboard and mouse events
         glfwPollEvents();

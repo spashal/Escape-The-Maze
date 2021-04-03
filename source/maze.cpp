@@ -17,11 +17,11 @@ Maze::Maze(float x, float y, color_t color) {
         -1.0f, -2.8f, -2.1f,
         -1.0f, -2.2f, -2.7f,
 
-        -1.0f, 2.8f, -2.7f,
-        -1.0f, 2.2f, -2.1f,
+        -1.0f, 1.8f, -1.5f,
+        -1.0f, 1.2f, -0.9f,
 
-        -1.0f, 2.8f, -2.1f,
-        -1.0f, 2.2f, -2.7f,
+        -1.0f, 1.8f, -0.9f,
+        -1.0f, 1.2f, -1.5f,
 
         -1.0f, -2.8f, 2.7f,
         -1.0f, -2.2f, 2.1f,
@@ -128,6 +128,15 @@ Maze::Maze(float x, float y, color_t color) {
         -1.0f, 0.6f, 0.6f,
         -1.0f, -3.0f, 0.6f,
 
+        -1.0, -3.0f, 0.0f, 
+        -1.0, -3.8f, 0.0f,
+
+        -1.0, -3.0f, 0.0f,
+        -1.0, -3.4f, 0.2f,
+
+        -1.0, -3.0f, 0.0f,
+        -1.0, -3.4f, -0.2f,
+
         vanishVert[0], vanishVert[1], vanishVert[2],        
         vanishVert[3], vanishVert[4], vanishVert[5],  
 
@@ -144,10 +153,8 @@ Maze::Maze(float x, float y, color_t color) {
         hashVerts[21 + temp2 * 24], hashVerts[22 + temp2 * 24], hashVerts[23 + temp2 * 24],
               
     };    
-    cout << vanishVert[2] << " " << vanishVert[5] << " " << vanishVert[8] << " " << vanishVert[11] << endl;
-    cout << this->vanishX << " " << this->vanishY << " " << this->vanishZ << endl;
-// 
-    this->object = create3DObject(GL_LINES, 15 * 2, vertex_buffer_data, color, GL_FILL);
+
+    this->object = create3DObject(GL_LINES, 18 * 2, vertex_buffer_data, color, GL_FILL);
 }
 
 void Maze::draw(glm::mat4 VP) {
